@@ -30,7 +30,7 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
   const [allMessages, setAllMessages] = useState<typeof messages>(() => messages);
 
   if (!user || !chat?.users) {
-    router.push('/');
+    router.replace('/');
     return <></>;
   }
 
@@ -76,7 +76,7 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
     scrollToBottom();
 
     if (!chat.id || typeof chat.id !== 'string') {
-      router.push('/chat');
+      router.replace('/chat');
       return;
     }
 

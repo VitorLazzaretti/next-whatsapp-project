@@ -32,7 +32,7 @@ const ChatItem = ({ id, users, loggedUser }: Props) => {
   }, []);
 
   const openChat = () => {
-    router.push(`/chat/${id}`);
+    router.replace(`/chat/${id}`);
   };
 
   return (

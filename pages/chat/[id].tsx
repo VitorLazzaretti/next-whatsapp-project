@@ -21,7 +21,7 @@ const ChatPage: NextPage = ({ messages, chat, users }: Props) => {
   const router = useRouter();
 
   if (!chat?.users || !user) {
-    router.push('/');
+    router.replace('/');
     return <></>;
   }
 

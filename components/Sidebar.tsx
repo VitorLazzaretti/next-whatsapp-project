@@ -47,12 +47,6 @@ const Sidebar = () => {
     };
   }, []);
 
-
-
-
-
-
-
   const createNewChat = async () => {
     const input = prompt('Please enter a email for the user you want to chat');
 
