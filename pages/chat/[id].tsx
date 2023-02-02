@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, limit, orderBy, query, Timestamp, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, Timestamp, where } from "firebase/firestore";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -113,13 +113,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        // messages: messages,
         chat: chat,
         users: users,
       },
     }
 
   } catch (error) {
+    await addDoc(collection(db, 'errors'), error);
     return { props: {} };
   }
 }
