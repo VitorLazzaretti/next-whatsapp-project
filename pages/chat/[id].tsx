@@ -42,7 +42,7 @@ const ChatPage: NextPage = ({ messages, chat, users }: Props) => {
       <Sidebar />
       <div id="chat-container" className="w-full">
         {chat && messages ?
-          <ChatScreen chat={chat} messages={messages} recipientUser={recipientUser}/>
+          <ChatScreen chat={chat} messages={messages} recipientUser={recipientUser} />
           :
           <h1>Nigga the cops outside</h1>
         }
@@ -71,60 +71,65 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!context.query?.id) return { props: {} };
   if (typeof context.query.id !== 'string') return { props: {} };
 
-  const chatsRef = doc(db, "chats", context.query.id);
-  const chatSnapshot = await getDoc<ChatProps>(chatsRef);
+  try {
+    const chatsRef = doc(db, "chats", context.query.id);
+    const chatSnapshot = await getDoc<ChatProps>(chatsRef);
 
-  if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
+    if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
 
-  const chat = {
-    id: chatSnapshot.id,
-    ...chatSnapshot?.data()
-  };
+    const chat = {
+      id: chatSnapshot.id,
+      ...chatSnapshot?.data()
+    };
 
-  if (!chat.users) return { props: {} };
+    if (!chat.users) return { props: {} };
 
-  if (chat.users.length < 1) return { props: {} };
+    if (chat.users.length < 1) return { props: {} };
 
-  const userCollection = collection(db, "users");
+    const userCollection = collection(db, "users");
 
-  const firstUsersRef = query(userCollection, where("email", "==", chat.users[0]));
-  const firstUserSnapshot = await getDocs<FirebaseUserProps>(firstUsersRef);
+    const firstUsersRef = query(userCollection, where("email", "==", chat.users[0]));
+    const firstUserSnapshot = await getDocs<FirebaseUserProps>(firstUsersRef);
 
-  const secondUserRef = query(userCollection, where("email", "==", chat.users[1]));
-  const secondUserSnapshot = await getDocs<FirebaseUserProps>(secondUserRef);
+    const secondUserRef = query(userCollection, where("email", "==", chat.users[1]));
+    const secondUserSnapshot = await getDocs<FirebaseUserProps>(secondUserRef);
 
-  const firstUserArray: UserProps[] = firstUserSnapshot?.docs.map((snapshot) => ({
-    ...snapshot?.data(),
-    id: snapshot.id,
-    lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
-  }));
+    const firstUserArray: UserProps[] = firstUserSnapshot?.docs.map((snapshot) => ({
+      ...snapshot?.data(),
+      id: snapshot.id,
+      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+    }));
 
-  const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
-    ...snapshot?.data(),
-    id: snapshot.id,
-    lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
-  }));
+    const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
+      ...snapshot?.data(),
+      id: snapshot.id,
+      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+    }));
 
-  const firstUser = firstUserArray[0];
-  const secondUser = secondUserArray[0];
+    const firstUser = firstUserArray[0];
+    const secondUser = secondUserArray[0];
 
-  const users = [(firstUser || null), (secondUser || null)];
+    const users = [(firstUser || null), (secondUser || null)];
 
-  const messagesCollection = collection(db, "messages");
-  const messagesQuery = query(messagesCollection, where("chatId", "==", chat.id), orderBy("createdAt", "asc"), limit(100));
-  const messagesSnapshot = await getDocs<FirebaseMessageProps>(messagesQuery);
+    const messagesCollection = collection(db, "messages");
+    const messagesQuery = query(messagesCollection, where("chatId", "==", chat.id), orderBy("createdAt", "asc"), limit(100));
+    const messagesSnapshot = await getDocs<FirebaseMessageProps>(messagesQuery);
 
-  const messages: MessageProps[] = messagesSnapshot?.docs.map((snapshot) => ({
-    ...snapshot.data(),
-    id: snapshot.id,
-    createdAt: snapshot.data()?.createdAt?.toDate().getTime(),
-  }));
+    const messages: MessageProps[] = messagesSnapshot?.docs.map((snapshot) => ({
+      ...snapshot.data(),
+      id: snapshot.id,
+      createdAt: snapshot.data()?.createdAt?.toDate().getTime(),
+    }));
 
-  return {
-    props: {
-      messages: messages,
-      chat: chat,
-      users: users,
-    },
+    return {
+      props: {
+        messages: messages,
+        chat: chat,
+        users: users,
+      },
+    }
+
+  } catch (error) {
+    return { props: {} };
   }
 }
