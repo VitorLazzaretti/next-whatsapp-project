@@ -10,7 +10,6 @@ import Message from './Message';
 import TimeAgo from 'timeago-react';
 
 type Props = {
-  messages: MessageProps[] | []
   chat: ChatProps;
   recipientUser?: UserProps;
 }
@@ -22,12 +21,12 @@ type FirebaseMessageProps = {
   sender: string;
 };
 
-const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
+const ChatScreen = ({ chat, recipientUser }: Props) => {
   const [user] = useAuthState(auth);
   const [input, setInput] = useState('');
   const router = useRouter();
   const referenceEnd = useRef<HTMLDivElement>(null);
-  const [allMessages, setAllMessages] = useState<typeof messages>(() => messages);
+  const [allMessages, setAllMessages] = useState<MessageProps[]>([]);
 
   if (!user || !chat?.users) {
     router.replace('/');
@@ -53,10 +52,10 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
     });
 
     return () => {
-      if (messages.length) setAllMessages([]);
+      if (allMessages.length) setAllMessages([]);
       unsubscribe();
     };
-  }, [messages]);
+  }, [chat.id]);
 
   const recipientEmail = getRecipientEmail(chat.users, user);
 
