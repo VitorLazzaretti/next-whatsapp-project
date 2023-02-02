@@ -26,7 +26,7 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
   const [input, setInput] = useState('');
   const router = useRouter();
   const referenceEnd = useRef<HTMLDivElement>(null);
-  const [allMessages, setAllMessages] = useState<MessageProps[]>([]);
+  const [allMessages, setAllMessages] = useState<MessageProps[]>(() => []);
 
   if (!user || !chat?.users) {
     router.replace('/');
@@ -38,8 +38,6 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
     const q = query(collection(db, "messages"), where("chatId", "==", chat?.id), orderBy('createdAt', "asc"), limit(100));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log(querySnapshot.docChanges().map(doc => console.log(doc.doc.data())));
-
       setAllMessages(prev => [...prev, ...querySnapshot.docChanges().map(
         (snaps) => {
           if (!snaps.doc) return {};

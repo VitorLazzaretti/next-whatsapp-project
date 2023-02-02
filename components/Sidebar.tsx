@@ -17,8 +17,6 @@ const Sidebar = () => {
   const chatsCollection = collection(db, "chats");
   const [loading, setLoading] = useState(true);
 
-  console.log(chats);
-
   useEffect(() => {
     setLoading(true);
     getChatsSnapshot()
