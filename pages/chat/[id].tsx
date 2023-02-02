@@ -68,10 +68,10 @@ type FirebaseUserProps = {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (!context.params?.id) return { props: {} };
-  if (typeof context.params.id !== 'string') return { props: {} };
+  if (!context.query?.id) return { props: {} };
+  if (typeof context.query.id !== 'string') return { props: {} };
 
-  const chatsRef = doc(db, "chats", context.params.id);
+  const chatsRef = doc(db, "chats", context.query.id);
   const chatSnapshot = await getDoc<ChatProps>(chatsRef);
 
   if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
