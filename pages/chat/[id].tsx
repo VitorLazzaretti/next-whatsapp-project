@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const chat = {
     id: chatSnapshot.id,
-    ...chatSnapshot.data()
+    ...chatSnapshot?.data()
   };
 
   if (!chat.users) return { props: {} };
@@ -94,15 +94,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const secondUserSnapshot = await getDocs<FirebaseUserProps>(secondUserRef);
 
   const firstUserArray: UserProps[] = firstUserSnapshot?.docs.map((snapshot) => ({
-    ...snapshot.data(),
+    ...snapshot?.data(),
     id: snapshot.id,
-    lastSeen: snapshot.data()?.lastSeen?.toDate().getTime(),
+    lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
   }));
 
   const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
-    ...snapshot.data(),
+    ...snapshot?.data(),
     id: snapshot.id,
-    lastSeen: snapshot.data()?.lastSeen?.toDate().getTime(),
+    lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
   }));
 
   const firstUser = firstUserArray[0];
