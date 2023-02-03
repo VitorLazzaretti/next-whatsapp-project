@@ -12,7 +12,7 @@ import getRecipientEmail from "../../utils/getRecipientEmail";
 type Props = {
   messages?: MessageProps[]
   chat?: ChatProps;
-  users?: UserProps[];
+  users?: UserProps[] | any;
 }
 
 const ChatPage: NextPage = ({ chat, users }: Props) => {
@@ -25,8 +25,12 @@ const ChatPage: NextPage = ({ chat, users }: Props) => {
     return <></>;
   }
 
+  console.log(users);
+  if (users) console.log(JSON.parse(users));
+  console.log(chat);
+
   const recipientEmail = getRecipientEmail(chat?.users, user);
-  const recipientUser = users?.find(u => u?.email === recipientEmail);
+  const recipientUser = user;
 
   useEffect(() => {
     if (chat?.users && user?.email) {

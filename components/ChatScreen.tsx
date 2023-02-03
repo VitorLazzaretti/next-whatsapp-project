@@ -8,10 +8,11 @@ import { auth, db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
 import Message from './Message';
 import TimeAgo from 'timeago-react';
+import { User } from 'firebase/auth';
 
 type Props = {
   chat: ChatProps;
-  recipientUser?: UserProps;
+  recipientUser?: UserProps | User;
 }
 
 type FirebaseMessageProps = {
@@ -103,7 +104,7 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
       <div className='sticky bg-white top-0 z-50 flex items-center p-3 border-b border-solid border-gray-200 h-20'>
         <Avatar
           className='m-1 mr-4'
-          src={recipientUser?.photoUrl || ""}
+          // src={recipientUser?.photoUrl || ""}
           imgProps={{ referrerPolicy: 'no-referrer' }}
         />
 
@@ -112,7 +113,7 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
 
           {recipientUser ?
             <p className='text-xs text-gray-500'> Last Seen{' '}
-              {recipientUser?.lastSeen ? (<TimeAgo datetime={new Date(recipientUser.lastSeen)} />) : 'Unavaliable'}
+              {/* {recipientUser?.lastSeen ? (<TimeAgo datetime={new Date(recipientUser.lastSeen)} />) : 'Unavaliable'} */} AAA
             </p>
             : <p className='text-xs text-gray-500'> Last Seen Unavaliable </p>
           }
