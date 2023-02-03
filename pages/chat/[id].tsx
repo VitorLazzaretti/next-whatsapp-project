@@ -114,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         chat: chat,
-        users: users,
+        users: JSON.stringify(users),
       },
     }
 
