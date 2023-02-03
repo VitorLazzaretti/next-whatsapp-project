@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, limit, orderBy, query, Timestamp, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, Timestamp, where } from "firebase/firestore";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -11,7 +11,6 @@ import getRecipientEmail from "../../utils/getRecipientEmail";
 
 type Props = {
   chat?: ChatProps;
-  messagesData?: MessagesData
   usersData?: UsersData;
 }
 
@@ -19,13 +18,8 @@ type UsersData = {
   users?: UserProps[];
 }
 
-type MessagesData = {
-  messages?: MessageProps[]
-}
-
-const ChatPage: NextPage = ({ usersData, chat, messagesData }: Props) => {
+const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   const users = usersData?.users;
-  const messages = messagesData?.messages;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
@@ -51,8 +45,8 @@ const ChatPage: NextPage = ({ usersData, chat, messagesData }: Props) => {
       </Head>
       <Sidebar />
       <div id="chat-container" className="w-full">
-        {chat && messages ?
-          <ChatScreen chat={chat} messages={messages} recipientUser={recipientUser} />
+        {chat ?
+          <ChatScreen chat={chat} recipientUser={recipientUser} />
           :
           <h1>Nigga the cops outside</h1>
         }
@@ -121,19 +115,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const users = [(firstUser || null), (secondUser || null)];
 
-    const messagesCollection = collection(db, "messages");
-    const messagesQuery = query(messagesCollection, where("chatId", "==", chat.id), orderBy("createdAt", "asc"), limit(100));
-    const messagesSnapshot = await getDocs<FirebaseMessageProps>(messagesQuery);
-
-    const messages: MessageProps[] = messagesSnapshot?.docs.map((snapshot) => ({
-      ...snapshot.data(),
-      id: snapshot.id,
-      createdAt: snapshot.data()?.createdAt?.toDate().getTime(),
-    }));
-
     return {
       props: {
-        messagesData: { messages: messages },
         chat: chat,
         usersData: { users: users },
       },

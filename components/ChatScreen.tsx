@@ -10,7 +10,6 @@ import Message from './Message';
 import TimeAgo from 'timeago-react';
 
 type Props = {
-  messages: MessageProps[] | []
   chat: ChatProps;
   recipientUser?: UserProps;
 }
@@ -22,12 +21,12 @@ type FirebaseMessageProps = {
   sender: string;
 };
 
-const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
+const ChatScreen = ({ chat, recipientUser }: Props) => {
   const [user] = useAuthState(auth);
   const [input, setInput] = useState('');
   const router = useRouter();
   const referenceEnd = useRef<HTMLDivElement>(null);
-  const [allMessages, setAllMessages] = useState<typeof messages>(() => messages);
+  const [allMessages, setAllMessages] = useState<MessageProps[]>([]);
 
   if (!user || !chat?.users) {
     router.replace('/');
@@ -39,15 +38,13 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
     const q = query(collection(db, "messages"), where("chatId", "==", chat?.id), orderBy('createdAt', "asc"), limit(100));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log(querySnapshot.docChanges().map(doc => console.log(doc.doc.data())));
-
-      setAllMessages(prev => [...prev, ...querySnapshot.docChanges().map(
+      setAllMessages(() => [...querySnapshot.docs?.map(
         (snaps) => {
-          if (!snaps.doc) return {};
+          if (!snaps) return {};
           return {
-            ...snaps.doc.data(),
-            createdAt: snaps.doc.data().createdAt.toDate().getTime(),
-            id: snaps.doc.id,
+            ...snaps.data(),
+            createdAt: snaps.data().createdAt.toDate().getTime(),
+            id: snaps.id,
           }
         })]);
     });
@@ -56,7 +53,7 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
       setAllMessages([]);
       unsubscribe();
     };
-  }, [messages]);
+  }, [chat]);
 
   const recipientEmail = getRecipientEmail(chat.users, user);
 

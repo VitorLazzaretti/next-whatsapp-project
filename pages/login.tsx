@@ -1,12 +1,16 @@
 import { Button } from '@mui/material';
 import { signInWithPopup } from 'firebase/auth';
 import Head from 'next/head'
+import { useRouter } from 'next/router';
 import React from 'react'
 import { auth, provider } from '../firebase';
 
 const Login = () => {
+  const router = useRouter();
+
   const signIn = () => {
     signInWithPopup(auth, provider)
+      .then(() => router.replace('/'))
       .catch(alert);
   }
 
