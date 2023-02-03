@@ -53,7 +53,7 @@ const ChatScreen = ({ chat, messages, recipientUser }: Props) => {
     });
 
     return () => {
-      if (messages.length) setAllMessages([]);
+      setAllMessages([]);
       unsubscribe();
     };
   }, [messages]);
