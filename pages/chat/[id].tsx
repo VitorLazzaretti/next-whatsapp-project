@@ -10,12 +10,22 @@ import { auth, db } from "../../firebase";
 import getRecipientEmail from "../../utils/getRecipientEmail";
 
 type Props = {
-  messages?: MessageProps[]
   chat?: ChatProps;
+  messagesData?: MessagesData
+  usersData?: UsersData;
+}
+
+type UsersData = {
   users?: UserProps[];
 }
 
-const ChatPage: NextPage = ({ messages, chat, users }: Props) => {
+type MessagesData = {
+  messages?: MessageProps[]
+}
+
+const ChatPage: NextPage = ({ usersData, chat, messagesData }: Props) => {
+  const users = usersData?.users;
+  const messages = messagesData?.messages;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
@@ -123,9 +133,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        messages: messages,
+        messagesData: { messages: messages },
         chat: chat,
-        users: users,
+        usersData: { users: users },
       },
     }
 
