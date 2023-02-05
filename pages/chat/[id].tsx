@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ChatScreen from "../../components/ChatScreen";
+import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
 import { auth, db } from "../../firebase";
 import getRecipientEmail from "../../utils/getRecipientEmail";
@@ -23,20 +24,30 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
-
-  if (!chat?.users || !user) {
-    router.replace('/');
-    return <></>;
-  }
-
-  const recipientEmail = getRecipientEmail(chat?.users, user);
-  const recipientUser = users?.find(u => u?.email === recipientEmail);
+  
+  if (!chat?.users) {
+    router.push('/login');
+    return <Loading />;
+  };
 
   useEffect(() => {
+    if(!user) {
+      router.push('/login');
+      return; 
+    }
+
     if (chat?.users && user?.email) {
       setPageTitle(`Chat with ${getRecipientEmail(chat.users, user)}`);
     }
   }, [chat.id, user]);
+
+  if (!user) {
+    router.push('/login');
+    return <Loading />;
+  };
+
+  const recipientEmail = getRecipientEmail(chat?.users, user);
+  const recipientUser = users?.find(u => u?.email === recipientEmail);
 
   return (
     <div className="flex">
@@ -56,13 +67,6 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
 }
 
 export default ChatPage;
-
-type FirebaseMessageProps = {
-  chatId?: string;
-  body?: string;
-  createdAt?: Timestamp;
-  sender?: string;
-};
 
 type FirebaseUserProps = {
   id?: string;

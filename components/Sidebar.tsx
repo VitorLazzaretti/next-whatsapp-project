@@ -81,7 +81,7 @@ const Sidebar = () => {
           className='flex items-center justify-between z-10 p-4 w-full border-b border-yellow-500 bg-zinc-800 h-20'
         >
           <Avatar
-            onClick={() => signOut(auth)}
+            onClick={() => { signOut(auth); }}
             className='m-3 cursor-pointer border-black border-2 hover:opacity-80'
             src={user?.photoURL || ""}
             imgProps={{ referrerPolicy: 'no-referrer' }}
