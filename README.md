@@ -1,27 +1,38 @@
-# Next.js + Tailwind CSS Example
+# Next.js Chat Application Project
+[![NPM](https://shields.io/npm/l/react)](https://github.com/VitorLazzarettiDev/next-whatsapp-project/blob/main/LICENCE)
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.2)](https://tailwindcss.com/blog/tailwindcss-v3-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+## About the Project
 
-## Deploy your own
+This project is an chat that was built based on the youtube video from [Sonny Sangha](https://www.youtube.com/watch?v=T2jKJF4BZOY) with Next.js. I was training my [TailwindCSS](https://tailwindcss.com/) and discovering how to use the follow technologies. In the end, I wanted to change the layout he used, so I made my layout and added another kind of user authentication. Basically, it's a diferent project :)
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+## Technologies used
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+### Frameworks
 
-## How to use
+* [Next.js](https://nextjs.org/)
+* [React.js](https://reactjs.org/)
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+### Main Dependencies
+
+* [TailwindCSS](https://tailwindcss.com/) - CSS Framework Packed with Classes
+* [MUI](https://mui.com/) - React Component Library
+* [Firebase](https://firebase.google.com/) - Realtime Events, Data Storage and User Auth
+
+## How to Execute the Project
+
+Requirements: 
+* Node v16.8.0 or later
 
 ```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-```
+# clone repo
+git clone https://github.com/VitorLazzarettiDev/next-whatsapp-project
 
-```bash
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-```
+# enter directory
+cd next-whatsapp-project
 
-```bash
-pnpm create next-app --example with-tailwindcss with-tailwindcss-app
-```
+# install dependencies
+npm install
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+# run project
+npm run dev
+```
