@@ -9,14 +9,15 @@ import getRecipientEmail from '../utils/getRecipientEmail';
 type Props = {
   id: string;
   users: string[];
-  loggedUser: User
+  loggedUser: User;
+  selected: boolean;
 };
 
 type UserInfo = {
   photoUrl?: string;
 };
 
-const ChatItem = ({ id, users, loggedUser }: Props) => {
+const ChatItem = ({ id, users, loggedUser, selected }: Props) => {
   const router = useRouter();
   const [recipientUser, setRecipientUser] = useState<UserInfo>();
 
@@ -37,14 +38,17 @@ const ChatItem = ({ id, users, loggedUser }: Props) => {
 
   return (
     <div
-      className='flex items-center cursor-pointer p-4 break-words hover:bg-gray-200'
+      className='flex items-center cursor-pointer break-words ml-[1px] h-20 bg-neutral-900 bg shadow-inner shadow-neutral-700 hover:bg-neutral-800'
       onClick={openChat}
     >
-      <Avatar
-        className='m-1 mr-4'
-        src={recipientUser?.photoUrl || ""}
-        imgProps={{ referrerPolicy: 'no-referrer' }}
-      />
+      <div className={`${selected ? 'bg-yellow-500': 'bg-neutral-500'} h-full w-1`}></div>
+      <div className='m-4'>
+        <Avatar
+          className='shadow-2xl shadow-black'
+          src={recipientUser?.photoUrl || ""}
+          imgProps={{ referrerPolicy: 'no-referrer' }}
+        />
+      </div>
 
       <p className='break-all'> {recipientEmail.split('@')[0]} </p>
     </div>

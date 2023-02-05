@@ -44,7 +44,7 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
         <title> {pageTitle} </title>
       </Head>
       <Sidebar />
-      <div id="chat-container" className="w-full">
+      <div id="chat-container" className="flex-1">
         {chat ?
           <ChatScreen chat={chat} recipientUser={recipientUser} />
           :

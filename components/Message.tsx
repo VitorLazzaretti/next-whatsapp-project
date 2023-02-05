@@ -11,12 +11,11 @@ const Message = ({ body, id, createdAt, sender }: MessageProps) => {
     <div id={id}>
       <p
         className={`w-fit p-4 rounded-lg m-2 min-w-[60px] pb-6 relative text-right
-        ${isSender ? 'ml-auto bg-[#def8c6]' : 'bg-gray-100 text-left'}`}
+        ${isSender ? 'ml-auto bg-yellow-400 text-black' : 'bg-zinc-800 text-left'}`}
       >
         {body}
 
-        <span className='p-2 text-gray-400 text-[9px] absolute bottom-0 right-0 text-right'>
-
+        <span className={`p-2 ${isSender ? 'text-zinc-700' : 'text-zinc-300'} text-[9px] absolute bottom-0 right-0 text-right`}>
           {moment(createdAt).format('LT')}
         </span>
       </p>

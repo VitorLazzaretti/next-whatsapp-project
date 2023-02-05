@@ -1,40 +1,48 @@
 import { Button, TextField } from '@mui/material';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { auth, provider } from '../firebase';
 import GoogleIcon from '@mui/icons-material/Google';
 import Link from 'next/link';
-import { LoadingButton } from '@mui/lab';
 
-const Login = () => {
+const SignUp = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setError('');
-    setLoading(false);
-  }, [email, password]);
+  const createAccount = () => {
+    if (!email || !password || !confirmPassword) {
+      return;
+    };
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    };
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        router.push('/');
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+
+  };
 
   const signIn = () => {
     signInWithPopup(auth, provider)
       .then(() => router.replace('/'))
-      .catch((error) => { setError(error.message); setLoading(false); });
+      .catch(alert);
   };
 
-  const loginWithEmail = () => {
-    if (error) return;
-    setLoading(true);
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => router.replace('/'))
-      .catch((error) => { setError(error.message); setLoading(false); });
-  };
-
+  useEffect(() => {
+    setError('');
+  }, [email, password, confirmPassword]);
 
   return (
     <div className='flex items-center justify-center w-full h-screen bg-neutral-900 relative'>
@@ -51,8 +59,9 @@ const Login = () => {
           <div className='flex flex-col relative justify-end'>
             <h1 className='text-5xl font-bold'> ConnectMe </h1>
             <p className='ml-1'> The best chatting app that you ever seen </p>
-            {error && <div className='text-red-400 absolute bottom-[-50px]'>{error}</div>}
+          {error && <div className='text-red-400 absolute bottom-[-50px]'>{error}</div>}
           </div>
+
 
           <div id='general-form' className='flex flex-col justify-center'>
             <div id='login' className=' flex flex-col justify-center space-y-4'>
@@ -62,7 +71,6 @@ const Login = () => {
                 variant='outlined'
                 fullWidth
                 size='medium'
-                value={email}
                 error={error.length > 0}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -72,21 +80,27 @@ const Login = () => {
                 fullWidth
                 size='medium'
                 type='password'
-                value={password}
                 error={error.length > 0}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <TextField
+                label='Confirm Password'
+                variant='outlined'
+                fullWidth
+                size='medium'
+                type='password'
+                error={error.length > 0}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
               <div className='flex flex-col w-full'>
-                <LoadingButton
-                  loading={loading}
-                  disabled={error.length > 0}
+                <Button
                   variant='contained'
                   size='large'
-                  onClick={loginWithEmail}
+                  onClick={createAccount}
                 >
-                  <span>Login</span>
-                </LoadingButton>
-                <Link href={'/signUp'} className='m-[2px] font-light text-yellow-500 text-sm'> Don't have an account? Sign Up </Link>
+                  Create Account
+                </Button>
+                <Link href={'/login'} className='m-[2px] font-light text-yellow-500 text-sm'> Already have an account? Login </Link>
               </div>
 
             </div>
@@ -110,4 +124,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

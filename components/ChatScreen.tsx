@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AttachFile, InsertEmoticon, Mic, MoreVert, Send } from '@mui/icons-material';
 import { Avatar, IconButton } from '@mui/material';
-import { addDoc, collection, doc, limit, onSnapshot, orderBy, query, QuerySnapshot, setDoc, Timestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, limit, onSnapshot, orderBy, query, setDoc, Timestamp, where } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
 import Message from './Message';
 import TimeAgo from 'timeago-react';
+
 
 type Props = {
   chat: ChatProps;
@@ -99,11 +100,15 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
 
 
   return (
-    <div id='containter-chat-screen' className='h-screen overflow-y-scroll flex flex-col'>
-      <div className='sticky bg-white top-0 z-50 flex items-center p-3 border-b border-solid border-gray-200 h-20'>
+    <div
+      id='containter-chat-screen'
+      className='h-screen  flex flex-col'
+    >
+      <div className='sticky bg-zinc-800 top-0 z-50 flex items-center shadow-lg shadow-neutral-700 p-3 border-b border-solid border-yellow-500 h-20'>
         <Avatar
           className='m-1 mr-4'
           src={recipientUser?.photoUrl || ""}
+          alt={recipientUser?.email || ""}
           imgProps={{ referrerPolicy: 'no-referrer' }}
         />
 
@@ -111,10 +116,10 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
           <h3 className='font-bold text-xl'>{recipientEmail}</h3>
 
           {recipientUser ?
-            <p className='text-xs text-gray-500'> Last Seen{' '}
+            <p className='text-xs text-gray-400'> Last Seen{' '}
               {recipientUser?.lastSeen ? (<TimeAgo datetime={new Date(recipientUser.lastSeen)} />) : 'Unavaliable'}
             </p>
-            : <p className='text-xs text-gray-500'> Last Seen Unavaliable </p>
+            : <p className='text-xs text-gray-400'> Last Seen Unavaliable </p>
           }
 
 
@@ -131,7 +136,7 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
       </div>
 
       <div
-        className='p-8 bg-[#e5ded8] flex-1'
+        className='p-8 bg-chat-bg4 bg-cover bg-center overflow-y-scroll flex-1'
       >
         {allMessages.map((message) => (
           <Message
@@ -145,12 +150,12 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
         <div id='end' ref={referenceEnd}></div>
       </div>
 
-      <form className='flex items-center p-3 sticky bottom-0 z-50 bg-white'>
+      <form className='flex items-center pb-5 pt-4 px-4 sticky bottom-0 z-50 bg-zinc-800'>
         <IconButton>
           <InsertEmoticon />
         </IconButton>
         <input
-          className='flex-1 items-center border border-neutral-300 bg-gray-100 rounded-3xl ml-4 mr-4 p-5'
+          className='flex-1 items-center border border-neutral-400 bg-neutral-700 rounded-lg ml-4 mr-4 h-10 px-4 outline-none'
           type='text'
           value={input}
           onChange={(e) => setInput(e.target.value)}

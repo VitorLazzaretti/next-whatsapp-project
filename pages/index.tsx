@@ -1,29 +1,29 @@
 import type { NextPage } from 'next'
 import Head from 'next/head';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import Sidebar from '../components/Sidebar';
-
+import { auth } from '../firebase';
 
 const Home: NextPage = () => {
+  const [user] = useAuthState(auth);
+  const router = useRouter();
+
+  if (!user) {
+    router.replace('/login');
+    return <></>;
+  }
+
+
   return (
     <div className='flex'>
       <Head>
-        <title> Let's Build WhatsApp 2.0 </title>
+        <title> ConnectMe </title>
       </Head>
 
       <Sidebar />
-      <div className='flex-1 flex flex-col h-screen items-center justify-center'>
-        <h2
-          className='bg-[#def8c6] p-4 m-8 rounded-xl font-bold text-center text-xl'
-        > Escolha ou crie um chat ao lado e converse com um amigo </h2>
-        
-        <Image
-          src={'/mobile.png'}
-          alt='Mobile'
-          width={650}
-          height={650}
-        />
-      </div>
+      <div className='flex-1 flex flex-col h-screen items-center justify-center bg-chat-bg bg-cover bg-center'></div>
     </div>
   );
 }
