@@ -65,7 +65,7 @@ const SignUp = () => {
 
           <div id='general-form' className='flex flex-col justify-center'>
             <div id='login' className=' flex flex-col justify-center space-y-4'>
-              <h3 className='text-gray-300 py-2'>Login into an account</h3>
+              <h3 className='text-gray-300 py-2'>Create an account</h3>
               <TextField
                 label='Email'
                 variant='outlined'
