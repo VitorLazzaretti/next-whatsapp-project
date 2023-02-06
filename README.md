@@ -1,5 +1,5 @@
 # Next.js Chat Application Project
-[![NPM](https://shields.io/npm/l/react)](https://github.com/VitorLazzarettiDev/next-whatsapp-project/blob/main/LICENCE)
+[![NPM](https://shields.io/npm/l/react)](https://github.com/VitorLazzarettiDev/next-whatsapp-project/blob/master/LICENCE)
 
 ## About the Project
 
