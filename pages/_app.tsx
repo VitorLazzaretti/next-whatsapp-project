@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from '../firebase';
 import Loading from '../components/Loading';
-import { useEffect } from 'react';
+import { createContext, useEffect } from 'react';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -37,8 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       {loading ? <Loading />
-        : <Component {...pageProps} />
-      }
+        : <Component {...pageProps} />}
     </ThemeProvider>
   );
 };

@@ -2,7 +2,7 @@ import { Chat, MoreVert, Search, Groups } from '@mui/icons-material';
 import { Avatar, Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import * as EmailValidator from 'email-validator';
 import { signOut } from 'firebase/auth';
-import { addDoc, collection, getDocs, onSnapshot, query, QuerySnapshot, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, onSnapshot, query, QuerySnapshot, Timestamp, where } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
 import React, { useEffect, useState } from 'react';
@@ -11,35 +11,105 @@ import { auth, db } from '../firebase';
 import ChatItem from './ChatItem';
 import Loading from './Loading';
 
+type FirebaseChat = {
+  id?: string;
+  users?: string[];
+  lastSent?: Timestamp;
+}
+
 const Sidebar = () => {
   const [user] = useAuthState(auth);
   const [chats, setChats] = useState<ChatProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isUserInPage, setIsUserInPage] = useState(true);
   const [shouldColorIcon, setShouldColorIcon] = useState(false);
+  const [notificateChats, setNotificateChats] = useState<string[]>([])
 
   const router = useRouter();
   const chatsCollection = collection(db, "chats");
 
   useEffect(() => {
+    window.addEventListener('blur', () => {
+      setIsUserInPage(false);
+      console.log("Not In Page");
+    });
+
+    window.addEventListener('focus', () => {
+      setIsUserInPage(true);
+      console.log("In Page");
+    });
+
+    return () => {
+      window.removeEventListener('blur', () => { });
+      window.removeEventListener('focus', () => { });
+    };
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
 
     getChatsSnapshot()
-      .then((snapshot: QuerySnapshot<ChatProps>) => {
-        setChats(snapshot.docs.map((doc) => ({ id: doc.id, users: doc.data().users })));
+      .then((snapshot: QuerySnapshot<FirebaseChat>) => {
+        const chatList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          lastSent: doc.data().lastSent?.toDate().getTime(),
+          users: doc.data().users
+        }));
+
+        const orderedChatList = chatList.sort((a, b) => (b.lastSent || 0) - (a.lastSent || 0));
+
+        setChats(orderedChatList);
         setLoading(false);
       })
       .catch(alert);
+  }, []);
 
+  useEffect(() => {
     const q = query(collection(db, "chats"), where("users", "array-contains", user?.email));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setChats([...querySnapshot.docs.map(
+      const chatList = [...querySnapshot.docs.map(
         (snaps) => {
           return {
-            id: snaps.id,
             ...snaps.data(),
+            id: snaps.id,
+            lastSent: snaps.data().lastSent?.toDate().getTime(),
           }
-        })]);
+        })];
+
+      const orderedChatList = chatList.sort((a, b) => (b.lastSent || 0) - (a.lastSent || 0));
+
+      setChats(orderedChatList);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const notify = (id: string) => {
+      if (notificateChats.includes(id)) {
+        return;
+      }
+
+      const audio = new Audio('/blip.mp3');
+      
+      audio.play();
+      console.log('A');
+      setNotificateChats(chats => [...chats, id]);
+    };
+
+    const q = query(collection(db, 'messages'), where('sentTo', '==', user?.email), where('createdAt', '>', Timestamp.now()));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docChanges().map((docChanges) => {
+        const data = docChanges.doc.data();
+        console.log(data);
+        if (router.query?.id !== data?.chatId || !isUserInPage) {
+          notify(data?.chatId);
+        };
+      });
     });
 
     return () => {
@@ -59,7 +129,8 @@ const Sidebar = () => {
     if (exists) return null;
 
     await addDoc(chatsCollection, {
-      users: [user.email, input]
+      users: [user.email, input],
+      lastSent: Timestamp.now()
     });
   };
 
@@ -72,6 +143,10 @@ const Sidebar = () => {
   const chatAlreadyExists = async (input: string) => {
     if (chats.length === 0) return false;
     return !!chats.find((chat) => chat.users!.includes(input));
+  };
+
+  const removeNotification = (id: string) => {
+    setNotificateChats(chats => chats.filter((chat) => chat !== id));
   };
 
   return (
@@ -142,6 +217,9 @@ const Sidebar = () => {
                 selected={router.query?.id === chat.id}
                 users={chat.users}
                 loggedUser={user}
+                lastSent={chat?.lastSent}
+                notify={notificateChats.includes(chat.id)}
+                onClick={removeNotification}
               />
             }
           </div>

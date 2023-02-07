@@ -13,28 +13,41 @@ import getRecipientEmail from "../../utils/getRecipientEmail";
 type Props = {
   chat?: ChatProps;
   usersData?: UsersData;
+  userDB?: UserProps; 
 }
 
 type UsersData = {
   users?: UserProps[];
 }
 
-const ChatPage: NextPage = ({ usersData, chat }: Props) => {
+type FirebaseChat = {
+  id?: string;
+  users?: string[];
+  lastSent?: Timestamp;
+}
+
+
+const ChatPage: NextPage = ({ usersData, chat, userDB }: Props) => {
   const users = usersData?.users;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
-  
+
+  if (!chat) {
+    router.push('/');
+    return <Loading />;
+  };
+
   if (!chat?.users) {
     router.push('/login');
     return <Loading />;
   };
 
   useEffect(() => {
-    if(!user) {
+    if (!user) {
       router.push('/login');
-      return; 
-    }
+      return;
+    };
 
     if (chat?.users && user?.email) {
       setPageTitle(`Chat with ${getRecipientEmail(chat.users, user)}`);
@@ -59,7 +72,7 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
         {chat ?
           <ChatScreen chat={chat} recipientUser={recipientUser} />
           :
-          <h1>Nigga the cops outside</h1>
+          <h1>Without Chat</h1>
         }
       </div>
     </div>
@@ -81,13 +94,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const chatsRef = doc(db, "chats", context.query.id);
-    const chatSnapshot = await getDoc<ChatProps>(chatsRef);
+    const chatSnapshot = await getDoc<FirebaseChat>(chatsRef);
 
     if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
 
     const chat = {
       id: chatSnapshot.id,
-      ...chatSnapshot?.data()
+      lastSent: chatSnapshot?.data().lastSent?.toDate().getTime(),
+      users: chatSnapshot?.data().users
     };
 
     if (!chat.users) return { props: {} };

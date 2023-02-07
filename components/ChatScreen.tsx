@@ -20,6 +20,7 @@ type FirebaseMessageProps = {
   body: string;
   createdAt: Timestamp;
   sender: string;
+  sentTo: string;
 };
 
 const ChatScreen = ({ chat, recipientUser }: Props) => {
@@ -60,6 +61,9 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
 
   const sendMessage = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    const audio = new Audio('/pop.mp3');
+    audio.play();
+
 
     setDoc(doc(db, 'users', user.uid), {
       lastSeen: Timestamp.now(),
@@ -74,7 +78,7 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
     scrollToBottom();
 
     if (!chat.id || typeof chat.id !== 'string') {
-      router.replace('/chat');
+      router.replace('/');
       return;
     }
 
@@ -83,9 +87,14 @@ const ChatScreen = ({ chat, recipientUser }: Props) => {
       createdAt: Timestamp.now(),
       sender: user.email!,
       chatId: chat?.id,
-    }
+      sentTo: recipientEmail
+    };
 
     await addDoc(collection(db, "messages"), newMessage).catch(console.error);
+
+    setDoc(doc(db, 'chats', chat.id), {
+      lastSent: Timestamp.now(),
+    }, { merge: true }).then().catch(console.error);
   }
 
   const scrollToBottom = () => {

@@ -1,6 +1,7 @@
 interface ChatProps {
   id?: string;
   users?: string[];
+  lastSent?: number;
 };
 
 interface MessageProps {
@@ -8,11 +9,12 @@ interface MessageProps {
   body?: string;
   createdAt?: number;
   sender?: string;
+  sentTo?: string;
 };
 
 interface UserProps {
-  id?: string;
-  email?: string;
-  lastSeen?: number;
-  photoUrl?: string;
+  id?: string | null;
+  email?: string | null;
+  lastSeen?: number | null;
+  photoUrl?: string | null;
 };
