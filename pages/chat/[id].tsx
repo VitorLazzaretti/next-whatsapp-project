@@ -22,7 +22,6 @@ type UsersData = {
 type FirebaseChat = {
   id?: string;
   users?: string[];
-  lastSent?: Timestamp;
 }
 
 
@@ -97,9 +96,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
 
-    const chat = {
+    const chat: ChatProps = {
       id: chatSnapshot.id,
-      lastSent: chatSnapshot?.data().lastSent?.toDate().getTime() ?? 0,
       users: chatSnapshot?.data().users
     };
 
