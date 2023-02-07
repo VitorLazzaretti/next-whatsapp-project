@@ -13,7 +13,6 @@ import getRecipientEmail from "../../utils/getRecipientEmail";
 type Props = {
   chat?: ChatProps;
   usersData?: UsersData;
-  userDB?: UserProps; 
 }
 
 type UsersData = {
@@ -27,7 +26,7 @@ type FirebaseChat = {
 }
 
 
-const ChatPage: NextPage = ({ usersData, chat, userDB }: Props) => {
+const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   const users = usersData?.users;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
