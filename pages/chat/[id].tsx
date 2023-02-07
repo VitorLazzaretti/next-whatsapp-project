@@ -13,7 +13,6 @@ import getRecipientEmail from "../../utils/getRecipientEmail";
 type Props = {
   chat?: ChatProps;
   usersData?: UsersData;
-  userDB?: UserProps; 
 }
 
 type UsersData = {
@@ -27,7 +26,7 @@ type FirebaseChat = {
 }
 
 
-const ChatPage: NextPage = ({ usersData, chat, userDB }: Props) => {
+const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   const users = usersData?.users;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
@@ -100,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const chat = {
       id: chatSnapshot.id,
-      lastSent: chatSnapshot?.data().lastSent?.toDate().getTime(),
+      lastSent: (chatSnapshot?.data().lastSent?.toDate().getTime() || null),
       users: chatSnapshot?.data().users
     };
 
@@ -125,7 +124,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
       ...snapshot?.data(),
       id: snapshot.id,
-      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+      lastSeen: snapshot?.data()?.lastSeen ? snapshot.data()?.lastSeen?.toDate().getTime() : null
     }));
 
     const firstUser = firstUserArray[0];
