@@ -124,7 +124,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
       ...snapshot?.data(),
       id: snapshot.id,
-      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+      lastSeen: snapshot?.data()?.lastSeen ? snapshot.data()?.lastSeen?.toDate().getTime() : null
     }));
 
     const firstUser = firstUserArray[0];
