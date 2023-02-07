@@ -99,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const chat = {
       id: chatSnapshot.id,
-      lastSent: chatSnapshot?.data().lastSent?.toDate().getTime(),
+      lastSent: (chatSnapshot?.data().lastSent?.toDate().getTime() || null),
       users: chatSnapshot?.data().users
     };
 
