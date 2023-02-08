@@ -3,7 +3,6 @@ import { User } from 'firebase/auth';
 import { collection, getDocs, query, QuerySnapshot, where } from 'firebase/firestore';
 import moment from 'moment';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
@@ -23,7 +22,6 @@ type UserInfo = {
 };
 
 const ChatItem = ({ id, users, loggedUser, lastSent, selected, notify, onClick }: Props) => {
-  const router = useRouter();
   const [recipientUser, setRecipientUser] = useState<UserInfo>();
   const recipientEmail = getRecipientEmail(users, loggedUser);
   const recipientUserCollection = collection(db, "users");
@@ -39,7 +37,6 @@ const ChatItem = ({ id, users, loggedUser, lastSent, selected, notify, onClick }
   return (
     <Link
       href={`/chat/${id}`}
-      passHref
       className='flex items-center cursor-pointer justify-between break-words ml-[1px] h-20 bg-neutral-900 bg shadow-inner shadow-neutral-700 hover:bg-neutral-800'
       onClick={() => onClick(id)}
     >

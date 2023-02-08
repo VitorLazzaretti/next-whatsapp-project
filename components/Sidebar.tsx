@@ -31,12 +31,10 @@ const Sidebar = () => {
   useEffect(() => {
     window.addEventListener('blur', () => {
       setIsUserInPage(false);
-      console.log("Not In Page");
     });
 
     window.addEventListener('focus', () => {
       setIsUserInPage(true);
-      console.log("In Page");
     });
 
     return () => {
@@ -96,7 +94,6 @@ const Sidebar = () => {
       const audio = new Audio('/blip.mp3');
       
       audio.play();
-      console.log('A');
       setNotificateChats(chats => [...chats, id]);
     };
 
@@ -105,7 +102,7 @@ const Sidebar = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       querySnapshot.docChanges().map((docChanges) => {
         const data = docChanges.doc.data();
-        console.log(data);
+
         if (router.query?.id !== data?.chatId || !isUserInPage) {
           notify(data?.chatId);
         };
