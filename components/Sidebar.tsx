@@ -30,10 +30,12 @@ const Sidebar = () => {
 
   useEffect(() => {
     window.addEventListener('blur', () => {
+      console.log("Not In Page")
       setIsUserInPage(false);
     });
 
     window.addEventListener('focus', () => {
+      console.log("In Page")
       setIsUserInPage(true);
     });
 
@@ -104,6 +106,7 @@ const Sidebar = () => {
         const data = docChanges.doc.data();
 
         console.log(data, isUserInPage);
+        console.log(router.query?.id !== data?.chatId);
         if (router.query?.id !== data?.chatId || !isUserInPage) {
           notify(data?.chatId);
         };
