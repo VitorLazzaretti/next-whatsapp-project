@@ -23,6 +23,7 @@ type UserInfo = {
 
 const ChatItem = ({ id, users, loggedUser, lastSent, selected, notify, onClick }: Props) => {
   const router = useRouter();
+  const [push, setPush] = useState(true);
   const [recipientUser, setRecipientUser] = useState<UserInfo>();
   const recipientEmail = getRecipientEmail(users, loggedUser);
   const recipientUserCollection = collection(db, "users");
@@ -35,11 +36,18 @@ const ChatItem = ({ id, users, loggedUser, lastSent, selected, notify, onClick }
       });
   }, []);
 
+  const handleClick = () => {
+    onClick(id);
+    if (push) {
+      router.replace(`/chat/${id}`);
+      setPush(false);
+    }
+  };
+
   return (
     <div
-
       className='flex items-center cursor-pointer justify-between break-words ml-[1px] h-20 bg-neutral-900 bg shadow-inner shadow-neutral-700 hover:bg-neutral-800'
-      onClick={() => { onClick(id); router.push(`/chat/${id}`); }}
+      onClick={handleClick}
     >
       <div className='flex items-center h-full'>
         <div className={`${selected ? 'bg-yellow-500' : 'bg-neutral-500'} h-full w-1`}></div>

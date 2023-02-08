@@ -32,18 +32,18 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   const router = useRouter();
 
   if (!chat) {
-    router.push('/');
+    router.replace('/');
     return <Loading />;
   };
 
   if (!chat?.users) {
-    router.push('/login');
+    router.replace('/login');
     return <Loading />;
   };
 
   useEffect(() => {
     if (!user) {
-      router.push('/login');
+      router.replace('/login');
       return;
     };
 
@@ -53,7 +53,7 @@ const ChatPage: NextPage = ({ usersData, chat }: Props) => {
   }, [chat.id, user]);
 
   if (!user) {
-    router.push('/login');
+    router.replace('/login');
     return <Loading />;
   };
 

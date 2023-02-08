@@ -26,7 +26,7 @@ const SignUp = () => {
 
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
-        router.push('/');
+        router.replace('/');
       })
       .catch((error) => {
         setError(error.message);
