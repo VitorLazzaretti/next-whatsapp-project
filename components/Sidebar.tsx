@@ -92,7 +92,7 @@ const Sidebar = () => {
       }
 
       const audio = new Audio('/blip.mp3');
-      
+
       audio.play();
       setNotificateChats(chats => [...chats, id]);
     };
@@ -103,6 +103,7 @@ const Sidebar = () => {
       querySnapshot.docChanges().map((docChanges) => {
         const data = docChanges.doc.data();
 
+        console.log(data, isUserInPage);
         if (router.query?.id !== data?.chatId || !isUserInPage) {
           notify(data?.chatId);
         };

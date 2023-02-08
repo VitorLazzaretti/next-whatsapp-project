@@ -38,10 +38,7 @@ const ChatItem = ({ id, users, loggedUser, lastSent, selected, notify, onClick }
 
   const handleClick = () => {
     onClick(id);
-    if (push) {
-      router.replace(`/chat/${id}`);
-      setPush(false);
-    }
+    router.replace(`/chat/${id}`);
   };
 
   return (
