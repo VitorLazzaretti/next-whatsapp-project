@@ -36,34 +36,34 @@ const ChatPage: NextPage = ({ usersData, chatData }: Props) => {
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
 
-  if (!chat) {
-    router.replace('/');
-    return <Loading />;
-  };
+  // if (!chat) {
+  //   router.replace('/');
+  //   return <Loading />;
+  // };
 
-  if (!chat?.users) {
-    router.replace('/login');
-    return <Loading />;
-  };
+  // if (!chat?.users) {
+  //   router.replace('/login');
+  //   return <Loading />;
+  // };
 
-  useEffect(() => {
-    if (!user) {
-      router.replace('/login');
-      return;
-    };
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.replace('/login');
+  //     return;
+  //   };
 
-    if (chat?.users && user?.email) {
-      setPageTitle(`Chat with ${getRecipientEmail(chat.users, user)}`);
-    }
-  }, [chat.id, user]);
+  //   if (chat?.users && user?.email) {
+  //     setPageTitle(`Chat with ${getRecipientEmail(chat.users, user)}`);
+  //   }
+  // }, [chat.id, user]);
 
-  if (!user) {
-    router.replace('/login');
-    return <Loading />;
-  };
+  // if (!user) {
+  //   router.replace('/login');
+  //   return <Loading />;
+  // };
 
-  const recipientEmail = getRecipientEmail(chat?.users, user);
-  const recipientUser = users?.find(u => u?.email === recipientEmail);
+  // const recipientEmail = getRecipientEmail(chat?.users, user);
+  // const recipientUser = users?.find(u => u?.email === recipientEmail);
 
   return (
     <div className="flex">
@@ -72,10 +72,13 @@ const ChatPage: NextPage = ({ usersData, chatData }: Props) => {
       </Head>
       <Sidebar />
       <div id="chat-container" className="flex-1">
-        {chat ?
-          <ChatScreen chat={chat} recipientUser={recipientUser} />
+        {false ?
+          // <ChatScreen chat={chat} recipientUser={recipientUser} />
+          <div>a</div>
           :
-          <h1>Without Chat</h1>
+          <div>
+            <Loading />
+          </div>
         }
       </div>
     </div>
@@ -95,55 +98,55 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!context.query?.id) return { props: {} };
   if (typeof context.query.id !== 'string') return { props: {} };
 
-  try {
-    const chatsRef = doc(db, "chats", context.query.id);
-    const chatSnapshot = await getDoc<FirebaseChat>(chatsRef);
+  // try {
+  //   const chatsRef = doc(db, "chats", context.query.id);
+  //   const chatSnapshot = await getDoc<FirebaseChat>(chatsRef);
 
-    if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
+  //   if (!chatSnapshot.id || !chatSnapshot.exists()) return { props: {} };
 
-    const chat: ChatProps = {
-      id: chatSnapshot.id,
-      users: chatSnapshot?.data().users
-    };
+  //   const chat: ChatProps = {
+  //     id: chatSnapshot.id,
+  //     users: chatSnapshot?.data().users
+  //   };
 
-    if (!chat.users) return { props: {} };
+  //   if (!chat.users) return { props: {} };
 
-    if (chat.users.length < 1) return { props: {} };
+  //   if (chat.users.length < 1) return { props: {} };
 
-    const userCollection = collection(db, "users");
+  //   const userCollection = collection(db, "users");
 
-    const firstUsersRef = query(userCollection, where("email", "==", chat.users[0]));
-    const firstUserSnapshot = await getDocs<FirebaseUserProps>(firstUsersRef);
+  //   const firstUsersRef = query(userCollection, where("email", "==", chat.users[0]));
+  //   const firstUserSnapshot = await getDocs<FirebaseUserProps>(firstUsersRef);
 
-    const secondUserRef = query(userCollection, where("email", "==", chat.users[1]));
-    const secondUserSnapshot = await getDocs<FirebaseUserProps>(secondUserRef);
+  //   const secondUserRef = query(userCollection, where("email", "==", chat.users[1]));
+  //   const secondUserSnapshot = await getDocs<FirebaseUserProps>(secondUserRef);
 
-    const firstUserArray: UserProps[] = firstUserSnapshot?.docs.map((snapshot) => ({
-      ...snapshot?.data(),
-      id: snapshot.id,
-      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
-    }));
+  //   const firstUserArray: UserProps[] = firstUserSnapshot?.docs.map((snapshot) => ({
+  //     ...snapshot?.data(),
+  //     id: snapshot.id,
+  //     lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+  //   }));
 
-    const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
-      ...snapshot?.data(),
-      id: snapshot.id,
-      lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
-    }));
+  //   const secondUserArray: UserProps[] = secondUserSnapshot?.docs.map((snapshot) => ({
+  //     ...snapshot?.data(),
+  //     id: snapshot.id,
+  //     lastSeen: snapshot?.data()?.lastSeen?.toDate().getTime(),
+  //   }));
 
-    const firstUser = firstUserArray[0];
-    const secondUser = secondUserArray[0];
+  //   const firstUser = firstUserArray[0];
+  //   const secondUser = secondUserArray[0];
 
-    const users = [(firstUser || null), (secondUser || null)];
+  //   const users = [(firstUser || null), (secondUser || null)];
 
-    return {
-      props: {
-        chatData: { chat: chat },
-        usersData: { users: users },
-      },
-    }
-
-  } catch (error) {
-    console.log(error);
-    return { props: {} };
+  return {
+    props: {
+      // chatData: { chat: chat },
+      // usersData: { users: users },
+    },
   }
+
+  // } catch (error) {
+  // console.log(error);
+  // return { props: {} };
+  // }
 }
