@@ -11,12 +11,16 @@ import { auth, db } from "../../firebase";
 import getRecipientEmail from "../../utils/getRecipientEmail";
 
 type Props = {
-  chat?: ChatProps;
+  chatData?: ChatData;
   usersData?: UsersData;
 }
 
 type UsersData = {
   users?: UserProps[];
+}
+
+type ChatData = {
+  chat?: ChatProps;
 }
 
 type FirebaseChat = {
@@ -25,8 +29,9 @@ type FirebaseChat = {
 }
 
 
-const ChatPage: NextPage = ({ usersData, chat }: Props) => {
+const ChatPage: NextPage = ({ usersData, chatData }: Props) => {
   const users = usersData?.users;
+  const chat = chatData?.chat;
   const [user] = useAuthState(auth);
   const [pageTitle, setPageTitle] = useState('Loading...');
   const router = useRouter();
@@ -132,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        chat: chat,
+        chatData: { chat: chat },
         usersData: { users: users },
       },
     }
