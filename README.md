@@ -31,6 +31,7 @@ git clone https://github.com/VitorLazzarettiDev/next-whatsapp-project
 cd next-whatsapp-project
 
 # install dependencies
+
 npm install
 
 # run project
